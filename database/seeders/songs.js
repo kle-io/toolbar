@@ -1,41 +1,55 @@
 'use strict';
 const faker = require('faker');
-const express = require( 'express' );
-const aws = require( 'aws-sdk' );
-const multerS3 = require( 'multer-s3' );
-const multer = require('multer');
+// const express = require( 'express' );
+// const aws = require( 'aws-sdk' );
+// const multerS3 = require( 'multer-s3' );
+// const multer = require('multer');
 const path = require( 'path' );
 const url = require('url');
-const keys = require('./../config/aws.js')
+const keys = require('./../../config/aws.js');
+const S3 = require('aws-sdk/clients/s3');
 
-const router = express.Router();
+// const router = express.Router();
 
-const s3 = new aws.S3({
+const s3 = new S3({
   accessKeyId: keys.key,
   secretAccessKey: keys.secretKey,
-  Bucket: 'fec-songs'
+  Bucket: 'fec-songs',
+  region: 'us-west-1'
  });
 
-module.exports = {
-  up: (queryInterface, Sequelize) => {
+ var params = {
+  Bucket: "fec-songs",
+ };
 
-    let data = [];
-    let amount = 100;
-    while(amount--) {
-      data.push({
-        title: faker.commerce.color,
-        artist: faker.name.findName(),
-        liked: false,
-        cover: faker.image.imageUrl(),
-        length:,
-        song:
-      })
+ s3.listObjects(params, function(err, data) {
+   if (err) {
+      console.log(err, err.stack);
+    } else {
+      console.log(data);
     }
-    return queryInterface.bulkInsert('Songs', data, {});
+ });
 
-  },
+// module.exports = {
+//   up: (queryInterface, Sequelize) => {
 
-  down: (queryInterface, Sequelize) => {
+//     let data = [];
+//     let amount = 100;
+//     while(amount--) {
+//       data.push({
+//         title: faker.commerce.color,
+//         artist: faker.name.findName(),
+//         liked: false,
+//         cover: faker.image.imageUrl(),
+//         length:,
+//         song:
+//       })
+//     }
+//     return queryInterface.bulkInsert('Songs', data, {});
 
-  }
-};
+//   },
+
+//   down: (queryInterface, Sequelize) => {
+
+//   }
+// };

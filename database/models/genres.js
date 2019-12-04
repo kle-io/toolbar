@@ -1,12 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const Genres = sequelize.define('Genres', {
-    // id: {
-    //   allowNull: false,
-    //   autoIncrement: true,
-    //   primaryKey: true,
-    //   type: DataTypes.INTEGER
-    // },
     genre: {
       allowNull: false,
       type: DataTypes.STRING,
