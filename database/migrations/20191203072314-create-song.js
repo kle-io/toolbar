@@ -20,10 +20,10 @@ module.exports = {
       cover: {
         type: Sequelize.STRING
       },
-      length: {
-        type: Sequelize.INTEGER
-      },
       song: {
+        type: Sequelize.STRING
+      },
+      duration: {
         type: Sequelize.STRING
       },
       createdAt: {

@@ -1,12 +1,12 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const Songs_Genres = sequelize.define('Songs_Genres', {
+  const SongGenre = sequelize.define('SongGenre', {
     songId: {
       type: DataTypes.INTEGER,
       foreignKey: true,
       allowNull: false,
       references: {
-        model: 'Songs',
+        model: 'Song',
         key: 'id'
       }
     },
@@ -15,10 +15,10 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: true,
       allowNull: false,
       references: {
-        model: 'Genres',
+        model: 'Genre',
         key: 'id'
       }
     }
   }, {});
-  return Songs_Genres;
+  return SongGenre;
 };

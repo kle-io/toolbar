@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const Songs = sequelize.define('Songs', {
+  const Song = sequelize.define('Song', {
     title: {
       allowNull: false,
       type: DataTypes.STRING,
@@ -26,8 +26,14 @@ module.exports = (sequelize, DataTypes) => {
         notEmpty: true
       }
     },
-    length: DataTypes.INTEGER,
     song: {
+      allowNull: false,
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: true
+      }
+    },
+    duration: {
       allowNull: false,
       type: DataTypes.STRING,
       validate: {
@@ -35,13 +41,14 @@ module.exports = (sequelize, DataTypes) => {
       }
     }
   }, {});
-  Songs.associate = function(models) {
+
+  Song.associate = function(models) {
     // associations can be defined here
-    Songs.belongsToMany(models.Genres, {
-      through: 'Songs_Genres',
-      as: 'genres',
+    Song.belongsToMany(models.Genre, {
+      through: 'SongGenre',
+      as: 'genre',
       foreinKey: 'songId'
-    })
+    });
   };
-  return Songs;
+  return Song;
 };
