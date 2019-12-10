@@ -201,6 +201,9 @@ class AudioPlayer extends React.Component {
 
     const { progress, progressionHandler, List, currentSong, playHandler } = this.props;
 
+    const minutes = Math.floor(currentSong.duration / 60) % 60;
+    const seconds = Math.floor(currentSong.duration) % 60;
+
     return (
       <React.Fragment>
         <PlayControlElements>
@@ -223,9 +226,7 @@ class AudioPlayer extends React.Component {
             <ProgressHandle >
             </ProgressHandle>
           </Playback>
-          <TotalTime className="songEnd">
-            {`${Math.floor(currentSong.duration / 60)}:${(60 * ((currentSong.duration / 60) - Math.floor(currentSong.duration / 60))).toString().substring(0, 2)}`}
-          </TotalTime>
+          <TotalTime className="songEnd">{`${minutes}:${seconds}`}</TotalTime>
           <div className="songProgression">
           </div >
         </Timeline>

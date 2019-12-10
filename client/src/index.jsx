@@ -129,7 +129,7 @@ class App extends React.Component {
             <AudioPlayer volume={volume} currentSong={currentSong} progress={progress} className="b" />
             <Volume volumeClickHandler={this.onVolumeClick} volume={volume}/>
             <SongInfo currentSong={currentSong} queueClickHandler={this.onQueueClick} />
-            {queue && <QueuePanel data={data}></QueuePanel>}
+            {queue && <QueuePanel data={data} currentSong={currentSong}></QueuePanel>}
             <Panel></Panel>
           </Toolbar>
         </Wrapper>

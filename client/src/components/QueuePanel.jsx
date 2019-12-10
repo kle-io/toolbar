@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import QueueList from './QueueList.jsx';
 
-const QueuePanel = ({ data }) => {
+const QueuePanel = ({ data, currentSong }) => {
 
   const Wrapper = styled.div`
   pointer-events: auto;
@@ -138,7 +138,7 @@ const QueuePanel = ({ data }) => {
         <ScrollSection>
           <ScrollSectionContainer>
             <SongsContainer>
-              <QueueList data = {data}/>
+              <QueueList data = {data} currentSong={currentSong}/>
             </SongsContainer>
           </ScrollSectionContainer>
         </ScrollSection>

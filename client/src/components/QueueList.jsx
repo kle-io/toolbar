@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const QueueList = ({ data }) => {
+const QueueList = ({ data, currentSong }) => {
 
   const Wrapper = styled.div`
   transform: translateY(240px);
@@ -211,22 +211,25 @@ const QueueList = ({ data }) => {
   width: 1px;
   `;
 
+  const minutes = Math.floor(currentSong.duration / 60) % 60;
+  const seconds = Math.floor(currentSong.duration) % 60;
+
   return (
     <Wrapper>
       <ItemWrapper>
         <ItemWrapperTwo>
           {/* <Dragger><i className="fas fa-ellipsis-v fa-lg"></i></Dragger> */}
           <QueueCover>
-            <Cover src={data[0].cover}></Cover>
+            <Cover src={currentSong.cover}></Cover>
           </QueueCover>
           <QueueDetails>
             <QueueArtistAndTitle>
-              <Artist>{data[0].artist}</Artist>
+              <Artist>{currentSong.artist}</Artist>
               <BasedOn>&nbsp;- From your history</BasedOn>
             </QueueArtistAndTitle>
-            <Title>{data[0].title}</Title>
+            <Title>{currentSong.title}</Title>
           </QueueDetails>
-          <Duration>3:44</Duration>
+          <Duration>{`${minutes}:${seconds}`}</Duration>
         </ItemWrapperTwo>
       </ItemWrapper>
       <Autoplay1>
