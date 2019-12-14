@@ -42,7 +42,7 @@ class App extends React.Component {
 
   componentDidMount() {
     console.log('hi');
-    axios.get('/api/songs')
+    axios.get('/api/toolbar/songs')
       .then(response => {
         this.setState({ 'data': response.data });
         this.setState({ 'currentSong': this.state.data[Math.floor(Math.random() * 100)] });
@@ -138,4 +138,4 @@ class App extends React.Component {
   }
 }
 
-ReactDOM.render(<App />, document.getElementById('app'));
+ReactDOM.render(<App />, document.getElementById('toolbar'));

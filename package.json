@@ -7,11 +7,9 @@
     "node": ">=6.13.0"
   },
   "scripts": {
-    "start": "nodemon server/index.js",
-    "webpack-dev": "webpack -d --watch",
-    "create": "npx sequelize-cli db:create",
-    "migrate": "npx sequelize-cli db:migrate",
-    "seed": "npx sequelize-cli db:seed:all"
+    "start": "node server/index.js",
+    "webpack": "webpack -d --watch",
+    "db:setup": "npx sequelize-cli db:create && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all"
   },
   "dependencies": {
     "@babel/polyfill": "^7.7.0",
