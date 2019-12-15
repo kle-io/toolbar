@@ -1,10 +1,8 @@
 import React from 'react';
-import styled from 'styled-components';
+// import styled from 'styled-components';
 import QueueList from './QueueList.jsx';
 
-const QueuePanel = ({ data, currentSong }) => {
-
-  const Wrapper = styled.div`
+const Wrapper = window.styled.div`
   pointer-events: auto;
   transform: translateY(0);
   opacity: 1;
@@ -24,7 +22,7 @@ const QueuePanel = ({ data, currentSong }) => {
   max-height: calc(100vh - 120px);
   `;
 
-  const Queue = styled.div`
+const Queue = window.styled.div`
   height: 100%;
   position: relative;
   box-shadow: 0 0 4px rgba(0,0,0,.25);
@@ -32,7 +30,7 @@ const QueuePanel = ({ data, currentSong }) => {
   user-select: none;
   `;
 
-  const Panel = styled.div`
+const Panel = window.styled.div`
   display: flex;
   align-items: center;
   width: 100%;
@@ -42,7 +40,7 @@ const QueuePanel = ({ data, currentSong }) => {
   height: 64px;
   `;
 
-  const Title = styled.div`
+const Title = window.styled.div`
   cursor: pointer;
   flex-grow: 1;
   line-height: 46px;
@@ -51,7 +49,7 @@ const QueuePanel = ({ data, currentSong }) => {
   font-weight: 100;
   `;
 
-  const ClearButton = styled.button`
+const ClearButton = window.styled.button`
   margin-right: 16px;
   display: inline-block;
   position: relative;
@@ -73,7 +71,7 @@ const QueuePanel = ({ data, currentSong }) => {
   box-sizing: border-box;
   `;
 
-  const HideQueue = styled.button`
+const HideQueue = window.styled.button`
   height: 46px;
   background-position: 50%;
   background-repeat: no-repeat;
@@ -96,7 +94,7 @@ const QueuePanel = ({ data, currentSong }) => {
   position: relative;
   `;
 
-  const ScrollSection = styled.div`
+const ScrollSection = window.styled.div`
   overflow: hidden !important;
   top: 64px;
   left: 0;
@@ -107,7 +105,7 @@ const QueuePanel = ({ data, currentSong }) => {
   box-sizing: border-box;
   `;
 
-  const ScrollSectionContainer = styled.div`
+const ScrollSectionContainer = window.styled.div`
   height: 185px;
   overflow-x: hidden;
   width: 480px;
@@ -117,15 +115,16 @@ const QueuePanel = ({ data, currentSong }) => {
   overflow: scroll;
   `;
 
-  const SongsContainer = styled.div`
+const SongsContainer = window.styled.div`
   background-size: 100% 2016px, auto;
   height: 185px;
   background-position: 0px 0px, 0px 0px;
   `;
 
-  const Songs = styled.div`
-
+const Songs = window.styled.div`
   `;
+
+const QueuePanel = ({ data, currentSong }) => {
 
   return (
     <Wrapper>
@@ -138,7 +137,7 @@ const QueuePanel = ({ data, currentSong }) => {
         <ScrollSection>
           <ScrollSectionContainer>
             <SongsContainer>
-              <QueueList data = {data} currentSong={currentSong}/>
+              <QueueList data={data} currentSong={currentSong} />
             </SongsContainer>
           </ScrollSectionContainer>
         </ScrollSection>

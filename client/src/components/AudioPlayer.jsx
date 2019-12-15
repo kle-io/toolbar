@@ -1,6 +1,152 @@
 import React from 'react';
-import styled from 'styled-components';
+// // import styled from 'styled-components';
 import * as $ from 'jquery';
+
+const PlayControlElements = window.styled.span`
+display: flex;
+position: relative;
+height: 100%;
+visibility: visible;
+`;
+
+const Back = window.styled.button`
+// background-position: 40%;
+padding: 0;
+width: 24px;
+height: 100%;
+margin: 0 0 0 12px;
+border: 0;
+text-shadow: none;
+background-color: transparent;
+-webkit-appearance: button;
+cursor: pointer;
+`;
+
+const Play = window.styled.button`
+padding: 0;
+// background: no-repeat 55%;
+width: 24px;
+height: 100%;
+margin: 0 0 0 12px;
+border: 0;
+text-shadow: none;
+background-color: transparent;
+-webkit-appearance: button;
+cursor: pointer;
+`;
+
+const Forward = window.styled.button`
+// background-position: 40%;
+padding: 0;
+width: 24px;
+height: 100%;
+margin: 0 0 0 12px;
+border: 0;
+text-shadow: none;
+background-color: transparent;
+-webkit-appearance: button;
+cursor: pointer;
+`;
+
+const Shuffle = window.styled.button`
+padding: 0;
+width: 24px;
+height: 100%;
+margin: 0 0 0 12px;
+border: 0;
+text-shadow: none;
+background-color: transparent;
+-webkit-appearance: button;
+cursor: pointer;
+`;
+
+const Repeat = window.styled.button`
+padding: 0;
+width: 24px;
+height: 100%;
+margin: 0 0 0 12px;
+border: 0;
+text-shadow: none;
+background-color: transparent;
+-webkit-appearance: button;
+cursor: pointer;
+`;
+
+const Timeline = window.styled.div`
+margin-right: 5px;
+flex-grow: 1;
+display: flex;
+font-size: 11px;
+padding-bottom: 10px;
+visibility: visible;
+position: relative;
+height: 100%;
+bottom: 0;
+width: 100%;
+-webkit-perspective: 900;
+perspective-origin: 80% 100%;
+`;
+
+const TimePassed = window.styled.div`
+width: 50px;
+height: 46px;
+color: #f50;
+text-align: right;
+line-height: 46px;
+display: block;
+`;
+
+const Playback = window.styled.div`
+position: relative;
+flex-grow: 1;
+margin-right: 12px
+padding: 10px 0;
+margin: 13px 10px 0;
+line-height: 46px;
+display: block;
+font-size: 11px;
+`;
+
+const PlaybackBar = window.styled.div`
+width: 100%;
+height: 1px;
+background-color: #ccc;
+position: absolute;
+display: block;
+`;
+
+const ProgressBar = window.styled.div`
+min-width: 0px;
+height: 1px;
+background-color: #f50;
+`;
+
+const ProgressHandle = window.styled.div`
+left: 22.8516%;
+border: 1px solid #f50;
+border-radius: 100%;
+height: 8px;
+width: 8px;
+background-color: #f50;
+box-sizing: border-box;
+margin-top: -4px;
+margin-left: -4px;
+opacity: 0;
+// transition: opacity .15s;
+// font: 0/0 a;
+text-shadow: none;
+color: transparent;
+`;
+
+const TotalTime = window.styled.div`
+width: 50px;
+height: 46px;
+color: #333;
+text-align: left;
+cursor: pointer;
+line-height: 46px;
+display: block;
+`;
 
 class AudioPlayer extends React.Component {
 
@@ -52,152 +198,6 @@ class AudioPlayer extends React.Component {
   }
 
   render() {
-
-    const PlayControlElements = styled.span`
-      display: flex;
-      position: relative;
-      height: 100%;
-      visibility: visible;
-    `;
-
-    const Back = styled.button`
-      // background-position: 40%;
-      padding: 0;
-      width: 24px;
-      height: 100%;
-      margin: 0 0 0 12px;
-      border: 0;
-      text-shadow: none;
-      background-color: transparent;
-      -webkit-appearance: button;
-      cursor: pointer;
-    `;
-
-    const Play = styled.button`
-      padding: 0;
-      // background: no-repeat 55%;
-      width: 24px;
-      height: 100%;
-      margin: 0 0 0 12px;
-      border: 0;
-      text-shadow: none;
-      background-color: transparent;
-      -webkit-appearance: button;
-      cursor: pointer;
-    `;
-
-    const Forward = styled.button`
-      // background-position: 40%;
-      padding: 0;
-      width: 24px;
-      height: 100%;
-      margin: 0 0 0 12px;
-      border: 0;
-      text-shadow: none;
-      background-color: transparent;
-      -webkit-appearance: button;
-      cursor: pointer;
-    `;
-
-    const Shuffle = styled.button`
-      padding: 0;
-      width: 24px;
-      height: 100%;
-      margin: 0 0 0 12px;
-      border: 0;
-      text-shadow: none;
-      background-color: transparent;
-      -webkit-appearance: button;
-      cursor: pointer;
-    `;
-
-    const Repeat = styled.button`
-      padding: 0;
-      width: 24px;
-      height: 100%;
-      margin: 0 0 0 12px;
-      border: 0;
-      text-shadow: none;
-      background-color: transparent;
-      -webkit-appearance: button;
-      cursor: pointer;
-    `;
-
-    const Timeline = styled.div`
-      margin-right: 5px;
-      flex-grow: 1;
-      display: flex;
-      font-size: 11px;
-      padding-bottom: 10px;
-      visibility: visible;
-      position: relative;
-      height: 100%;
-      bottom: 0;
-      width: 100%;
-      -webkit-perspective: 900;
-      perspective-origin: 80% 100%;
-    `;
-
-    const TimePassed = styled.div`
-      width: 50px;
-      height: 46px;
-      color: #f50;
-      text-align: right;
-      line-height: 46px;
-      display: block;
-    `;
-
-    const Playback = styled.div`
-      position: relative;
-      flex-grow: 1;
-      margin-right: 12px
-      padding: 10px 0;
-      margin: 13px 10px 0;
-      line-height: 46px;
-      display: block;
-      font-size: 11px;
-    `;
-
-    const PlaybackBar = styled.div`
-      width: 100%;
-      height: 1px;
-      background-color: #ccc;
-      position: absolute;
-      display: block;
-    `;
-
-    const ProgressBar = styled.div`
-      min-width: 0px;
-      height: 1px;
-      background-color: #f50;
-    `;
-
-    const ProgressHandle = styled.div`
-      left: 22.8516%;
-      border: 1px solid #f50;
-      border-radius: 100%;
-      height: 8px;
-      width: 8px;
-      background-color: #f50;
-      box-sizing: border-box;
-      margin-top: -4px;
-      margin-left: -4px;
-      opacity: 0;
-      // transition: opacity .15s;
-      // font: 0/0 a;
-      text-shadow: none;
-      color: transparent;
-    `;
-
-    const TotalTime = styled.div`
-      width: 50px;
-      height: 46px;
-      color: #333;
-      text-align: left;
-      cursor: pointer;
-      line-height: 46px;
-      display: block;
-    `;
 
     const { progress, progressionHandler, List, currentSong, playHandler } = this.props;
 
