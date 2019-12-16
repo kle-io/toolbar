@@ -6,6 +6,7 @@ const cors = require('cors');
 const app = express();
 
 app.use('/', express.static(path.resolve(__dirname, '..', 'public')));
+app.use('/:id', express.static(path.resolve(__dirname, '..', 'public')));
 app.use(express.json());
 
 app.use(cors({
@@ -13,8 +14,11 @@ app.use(cors({
   credentials: true
 }));
 
-app.get('/api/toolbar/songs', (req, res) => {
-  db.Song.findAll({}).then((data) => res.send(data));
+app.get('/api/toolbar/songs/:id', (req, res) => {
+  db.Song.findOne({
+    where: { id: req.params.id },
+    include: [{ all: true, nested: true }],
+  }).then((data) => res.send(data));
 });
 
 const PORT = 3003;

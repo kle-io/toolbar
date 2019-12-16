@@ -43,6 +43,8 @@ button {
   border-image: initial;
 }
 
+button:focus {outline:0 !important;}
+
 .container {
   flex: 1;
 }
