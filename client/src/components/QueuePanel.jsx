@@ -1,27 +1,26 @@
 import React from 'react';
-// import styled from 'styled-components';
 import QueueList from './QueueList.jsx';
 
+// entire queue
+
+// play controls queue
 const Wrapper = window.styled.div`
   pointer-events: auto;
   transform: translateY(0);
   opacity: 1;
-  transition-duration: .35s;
-  transition-timing-function: cubic-bezier(0,0,0,1.2);
   position: absolute;
   bottom: 54px;
   right: 0px;
   width: 480px;
   // transition-property: transform,opacity,-webkit-transform;
-  // transition-duration: .2s;
-  // transition-timing-function: cubic-bezier(.66,-.41,1,1);
-  // transform: translateY(100px);
+  // transition-duration: .35s;
+  // transition-timing-function: cubic-bezier(0,0,0,1.2);
   pointer-events: none;
-  // opacity: 0;
   height: 660px;
   max-height: calc(100vh - 120px);
   `;
 
+// queue m visible
 const Queue = window.styled.div`
   height: 100%;
   position: relative;
@@ -30,6 +29,9 @@ const Queue = window.styled.div`
   user-select: none;
   `;
 
+// entire Next Up --> Clear --> X buttons
+
+// queue panel
 const Panel = window.styled.div`
   display: flex;
   align-items: center;
@@ -50,6 +52,7 @@ const Title = window.styled.div`
   `;
 
 const ClearButton = window.styled.button`
+  pointer-events: auto;
   margin-right: 16px;
   display: inline-block;
   position: relative;
@@ -72,6 +75,7 @@ const ClearButton = window.styled.button`
   `;
 
 const HideQueue = window.styled.button`
+  pointer-events: auto;
   height: 46px;
   background-position: 50%;
   background-repeat: no-repeat;
@@ -94,6 +98,9 @@ const HideQueue = window.styled.button`
   position: relative;
   `;
 
+// items container
+
+// scrollable
 const ScrollSection = window.styled.div`
   overflow: hidden !important;
   top: 64px;
@@ -105,8 +112,11 @@ const ScrollSection = window.styled.div`
   box-sizing: border-box;
   `;
 
+// scrollable inner
 const ScrollSectionContainer = window.styled.div`
-  height: 185px;
+  // constantly add 48 to height
+  // stops at 596
+  height: 596px;
   overflow-x: hidden;
   width: 480px;
   padding-right: 30px;
@@ -115,29 +125,28 @@ const ScrollSectionContainer = window.styled.div`
   overflow: scroll;
   `;
 
+// items height
 const SongsContainer = window.styled.div`
   background-size: 100% 2016px, auto;
-  height: 185px;
+  // constantly add 48 to height
+  height: 761px;
   background-position: 0px 0px, 0px 0px;
   `;
 
-const Songs = window.styled.div`
-  `;
-
-const QueuePanel = ({ data, currentSong }) => {
+const QueuePanel = ({ queue, currentSong, autoplay, queueClearHandler, clearClickHandler, autoplayHandler }) => {
 
   return (
     <Wrapper>
       <Queue>
         <Panel>
           <Title>Next Up</Title>
-          <ClearButton>Clear</ClearButton>
-          <HideQueue><i className="fas fa-times fa-lg"></i></HideQueue>
+          <ClearButton onClick={() => clearClickHandler()}>Clear</ClearButton>
+          <HideQueue onClick={() => queueClearHandler()}><i className="fas fa-times fa-lg"></i></HideQueue>
         </Panel>
         <ScrollSection>
           <ScrollSectionContainer>
             <SongsContainer>
-              <QueueList data={data} currentSong={currentSong} />
+              <QueueList queue={queue} currentSong={currentSong} autoplay={autoplay} autoplayHandler={autoplayHandler} />
             </SongsContainer>
           </ScrollSectionContainer>
         </ScrollSection>

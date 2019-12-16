@@ -8,6 +8,8 @@ import SongInfo from './components/SongInfo.jsx';
 import QueuePanel from './components/QueuePanel.jsx';
 import * as $ from 'jquery';
 
+// styling for the toolbar
+
 const Footer = window.styled.div`
 position: fixed;
 bottom: 0;
@@ -17,7 +19,7 @@ width: 100%;
 perspective: 900;
 -webkit-perspective-origin: 80% 100%;
 perspective-origin: 80% 100%;
-z-index: 1001;
+z-index: 1;
 display: flex;
 flex-shrink: 0;
 background-color: #f2f2f2;
@@ -74,7 +76,8 @@ class App extends React.Component {
       play: false,
       progress: '00:00',
       volume: false,
-      songId: null
+      songId: null,
+      autoplay: false
     };
 
     this.onQueueClick = this.onQueueClick.bind(this);
@@ -83,6 +86,9 @@ class App extends React.Component {
     this.onProgression = this.onProgression.bind(this);
     this.onNext = this.onNext.bind(this);
     this.onBack = this.onBack.bind(this);
+    this.onQueueClearClick = this.onQueueClearClick.bind(this);
+    this.onClearClick = this.onClearClick.bind(this);
+    this.onAutoplay = this.onAutoplay.bind(this);
 
   }
 
@@ -119,46 +125,11 @@ class App extends React.Component {
     }
   }
 
-  onQueueClick() {
-    const { queueIcon, queue } = this.state;
-    this.setState({ queueIcon: !queueIcon });
-  }
-
-  onVolumeClick() {
-    const { volume } = this.state;
-    this.setState({ volume: !volume });
-  }
-
-  onPlay() {
-    event.preventDefault();
-    const { play } = this.state;
-    const audio = document.getElementsByTagName('audio')[0];
-    if (play) {
-      audio.pause();
-    } else {
-      audio.play();
-    }
-    this.setState({ play: !play });
-  }
-
-  onProgression() {
-    event.preventDefault();
-    const audio = document.getElementsByClassName('myAudioPlayer')[0];
-    document.getElementsByClassName('myProgressBar')[0].style.width = `${(audio.currentTime / audio.duration) * 100}%`;
-    let sec = parseInt(audio.currentTime % 60, 0);
-    let min = parseInt((audio.currentTime / 60) % 60, 0);
-    if (sec.toString().length === 1) {
-      sec = `0${sec}`;
-    }
-    this.setState({
-      progress: `${min}:${sec}`,
-    });
-  }
-
-  onNext() {
+  // functions passed to AudioPlayer
+  onBack() {
     event.preventDefault();
     let { songId, queue } = this.state;
-    songId = songId + 1;
+    songId = songId - 1;
     axios.get(`/api/toolbar/songs/${songId}`)
       .then(response => {
         this.setState({ currentSong: response.data });
@@ -174,17 +145,29 @@ class App extends React.Component {
       });
   }
 
-  onBack() {
+  onPlay() {
+    event.preventDefault();
+    const { play } = this.state;
+    const audio = document.getElementsByTagName('audio')[0];
+    if (play) {
+      audio.pause();
+    } else {
+      audio.play();
+    }
+    this.setState({ play: !play });
+  }
+
+  onNext() {
     event.preventDefault();
     let { songId, queue } = this.state;
-    songId = songId - 1;
+    songId = songId + 1;
     axios.get(`/api/toolbar/songs/${songId}`)
       .then(response => {
         this.setState({ currentSong: response.data });
         this.setState({ songId: songId });
         this.setState({ play: false });
         this.setState(prevState => ({
-          queue: [response.data, ...prevState.queue]
+          queue: [...prevState.queue, response.data]
         }));
         console.log(queue);
       })
@@ -209,9 +192,59 @@ class App extends React.Component {
       });
   }
 
+  onProgression() {
+    event.preventDefault();
+    const audio = document.getElementsByClassName('myAudioPlayer')[0];
+    document.getElementsByClassName('myProgressBar')[0].style.width = `${(audio.currentTime / audio.duration) * 100}%`;
+    let sec = parseInt(audio.currentTime % 60, 0);
+    let min = parseInt((audio.currentTime / 60) % 60, 0);
+    if (sec.toString().length === 1) {
+      sec = `0${sec}`;
+    }
+    this.setState({
+      progress: `${min}:${sec}`,
+    });
+  }
+
+  // functions passed to QueueList
+  onQueueClick() {
+    event.preventDefault();
+    const { queueIcon } = this.state;
+    this.setState({ queueIcon: !queueIcon });
+  }
+
+  onQueueClearClick() {
+    event.preventDefault();
+    const { queueIcon } = this.state;
+    this.setState({ queueIcon: !queueIcon });
+    console.log(queue);
+  }
+
+  onAutoplay() {
+    event.preventDefault();
+    const { autoplay } = this.state;
+    this.setState({ autoplay: !autoplay });
+  }
+
+  onClearClick() {
+    event.preventDefault();
+    this.setState(prevState => {
+      let oldQueue = prevState.queue;
+      let newQueue = oldQueue.slice(oldQueue.length - 1);
+      return {queue: newQueue};
+    });
+  }
+
+  // functions passed to Volume
+  onVolumeClick() {
+    event.preventDefault();
+    const { volume } = this.state;
+    this.setState({ volume: !volume });
+  }
+
   render() {
 
-    const { currentSong, data, progress, queue, queueIcon, volume, play } = this.state;
+    const { currentSong, progress, queue, queueIcon, volume, play, autoplay } = this.state;
     console.log(queue);
 
     return (
@@ -219,10 +252,10 @@ class App extends React.Component {
         <Wrapper>
           <Toolbar className="contain" >
             <Bg></Bg>
-            <AudioPlayer volume={volume} currentSong={currentSong} progress={progress} play={play} playHandler={this.onPlay} progressionHandler={this.onProgression} nextHandler={this.onNext} backHandler={this.onBack} className="b" />
+            <AudioPlayer volume={volume} currentSong={currentSong} progress={progress} play={play} playHandler={this.onPlay} progressionHandler={this.onProgression} nextHandler={this.onNext} backHandler={this.onBack} />
             <Volume volumeClickHandler={this.onVolumeClick} volume={volume} />
             <SongInfo currentSong={currentSong} queueClickHandler={this.onQueueClick} />
-            {queueIcon && <QueuePanel data={data} currentSong={currentSong}></QueuePanel>}
+            {queueIcon && <QueuePanel queue={queue} currentSong={currentSong} autoplay={autoplay} autoplayHandler={this.onAutoplay} queueClearHandler={this.onQueueClearClick} clearClickHandler={this.onClearClick}></QueuePanel>}
             <Panel></Panel>
           </Toolbar>
         </Wrapper>
