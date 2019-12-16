@@ -1,5 +1,4 @@
 import React from 'react';
-// // import styled from 'styled-components';
 import * as $ from 'jquery';
 
 const PlayControlElements = window.styled.span`
@@ -153,64 +152,26 @@ class AudioPlayer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      playing: false,
-      progress: '00:00'
     };
-
-    this.onPlay = this.onPlay.bind(this);
-    this.onProgression = this.onProgression.bind(this);
-  }
-
-
-  onPlay() {
-    event.preventDefault();
-    const { playing } = this.state;
-    // const playButton = document.getElementsByClassName();
-    const audio = document.getElementsByTagName('audio')[0];
-    if (playing) {
-      console.log('pausing');
-      audio.pause();
-    } else {
-      console.log('playing');
-      audio.play();
-    }
-    // this.setState({ playing: !playing });
-    console.log(playing);
-  }
-
-  onProgression() {
-    event.preventDefault();
-    // console.log(myProgressBar);
-    const audio = document.getElementsByTagName('audio')[0];
-    document.getElementsByClassName('myProgressBar')[0].style.width = `${(audio.currentTime / audio.duration) * 100}%`;
-    let sec = parseInt(audio.currentTime % 60, 0);
-    let min = parseInt((audio.currentTime / 60) % 60, 0);
-    if (sec.toString().length === 1) {
-      sec = `0${sec}`;
-    }
-    if (min.toString().length === 1) {
-      min = `0${min}`;
-    }
-    console.log(`${min}:${sec}`);
-    // this.setState({
-    //   progress: `${min}:${sec}`,
-    // });
   }
 
   render() {
 
-    const { progress, progressionHandler, List, currentSong, playHandler } = this.props;
+    const { progress, progressionHandler, List, currentSong, playHandler, play, nextHandler, backHandler } = this.props;
 
     const minutes = Math.floor(currentSong.duration / 60) % 60;
-    const seconds = Math.floor(currentSong.duration) % 60;
+    let seconds = Math.floor(currentSong.duration) % 60;
+    if (seconds.toString().length === 1) {
+      seconds = `0${seconds}`;
+    }
 
     return (
       <React.Fragment>
         <PlayControlElements>
-          <audio ref={ref => this.player = ref} src={currentSong.song} onTimeUpdate={() => this.onProgression()}></audio>
-          <Back><i className="fas fa-step-backward fa-lg"></i></Back>
-          <Play onClick={() => this.onPlay()}><i className={`fas fa-${this.state.playing ? 'pause' : 'play'} fa-lg`}></i></Play>
-          <Forward><i className="fas fa-step-forward fa-lg"></i></Forward>
+          <audio className='myAudioPlayer' src={currentSong.song} onTimeUpdate={() => progressionHandler()}></audio>
+          <Back onClick={() => backHandler()}><i className="fas fa-step-backward fa-lg"></i></Back>
+          <Play onClick={() => playHandler()}><i className={`fas fa-${play ? 'pause' : 'play'} fa-lg`}></i></Play>
+          <Forward onClick={() => nextHandler()}><i className="fas fa-step-forward fa-lg"></i></Forward>
           <Shuffle><i className="fas fa-random fa-lg"></i></Shuffle>
           <Repeat><i className="fas fa-circle-notch fa-lg"></i></Repeat>
         </PlayControlElements>

@@ -2,8 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import jquery from 'jquery';
 import axios from 'axios';
-// import styled from 'styled-components';
-// import Buttons from './components/Buttons.jsx';
 import AudioPlayer from './components/AudioPlayer.jsx';
 import Volume from './components/Volume.jsx';
 import SongInfo from './components/SongInfo.jsx';
@@ -69,67 +67,162 @@ class App extends React.Component {
         liked: false,
         cover: '',
         song: '',
-        duration: ''
+        duration: '0'
       },
-      data: [{
-        title: '',
-        artist: '',
-        liked: false,
-        cover: '',
-        song: '',
-        duration: ''
-      }],
-      play: true,
+      queue: [],
+      queueIcon: false,
+      play: false,
       progress: '00:00',
-      queue: false,
-      volume: false
+      volume: false,
+      songId: null
     };
 
     this.onQueueClick = this.onQueueClick.bind(this);
     this.onVolumeClick = this.onVolumeClick.bind(this);
+    this.onPlay = this.onPlay.bind(this);
+    this.onProgression = this.onProgression.bind(this);
+    this.onNext = this.onNext.bind(this);
+    this.onBack = this.onBack.bind(this);
+
   }
 
   componentDidMount() {
-    console.log('hi');
-    axios.get('/api/toolbar/songs')
+    let path = location.pathname;
+    let songId = path.substring(0, path.length - 1);
+    let { queue } = this.state;
+
+    if (songId === '' || songId === undefined) {
+      songId = Math.floor(Math.random() * 100);
+      axios.get(`/api/toolbar/songs/${songId}`)
+        .then(response => {
+          this.setState({ currentSong: response.data });
+          this.setState({ songId: songId });
+          this.setState(prevState => ({
+            queue: [response.data, ...prevState.queue]
+          }));
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    } else {
+      songId = songId.slice(1, songId.length);
+      axios.get(`/api/toolbar/songs/${songId}`)
+        .then(response => {
+          this.setState({ currentSong: response.data });
+          this.setState(prevState => ({
+            queue: [response.data, ...prevState.queue]
+          }));
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
+  }
+
+  onQueueClick() {
+    const { queueIcon, queue } = this.state;
+    this.setState({ queueIcon: !queueIcon });
+  }
+
+  onVolumeClick() {
+    const { volume } = this.state;
+    this.setState({ volume: !volume });
+  }
+
+  onPlay() {
+    event.preventDefault();
+    const { play } = this.state;
+    const audio = document.getElementsByTagName('audio')[0];
+    if (play) {
+      audio.pause();
+    } else {
+      audio.play();
+    }
+    this.setState({ play: !play });
+  }
+
+  onProgression() {
+    event.preventDefault();
+    const audio = document.getElementsByClassName('myAudioPlayer')[0];
+    document.getElementsByClassName('myProgressBar')[0].style.width = `${(audio.currentTime / audio.duration) * 100}%`;
+    let sec = parseInt(audio.currentTime % 60, 0);
+    let min = parseInt((audio.currentTime / 60) % 60, 0);
+    if (sec.toString().length === 1) {
+      sec = `0${sec}`;
+    }
+    this.setState({
+      progress: `${min}:${sec}`,
+    });
+  }
+
+  onNext() {
+    event.preventDefault();
+    let { songId, queue } = this.state;
+    songId = songId + 1;
+    axios.get(`/api/toolbar/songs/${songId}`)
       .then(response => {
-        this.setState({ 'data': response.data });
-        this.setState({ 'currentSong': this.state.data[Math.floor(Math.random() * 100)] });
+        this.setState({ currentSong: response.data });
+        this.setState({ songId: songId });
+        this.setState({ play: false });
+        this.setState(prevState => ({
+          queue: [response.data, ...prevState.queue]
+        }));
+        console.log(queue);
       })
       .catch(error => {
         console.log(error);
       });
   }
 
-  onQueueClick() {
-    const { queue } = this.state;
-    this.setState({queue: !queue});
+  onBack() {
+    event.preventDefault();
+    let { songId, queue } = this.state;
+    songId = songId - 1;
+    axios.get(`/api/toolbar/songs/${songId}`)
+      .then(response => {
+        this.setState({ currentSong: response.data });
+        this.setState({ songId: songId });
+        this.setState({ play: false });
+        this.setState(prevState => ({
+          queue: [response.data, ...prevState.queue]
+        }));
+        console.log(queue);
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
-  onVolumeClick() {
-    const { volume } = this.state;
-    this.setState({volume: !volume});
+  onShuffle() {
+    event.preventDefault();
+    songId = Math.floor(Math.random() * 100);
+    axios.get(`/api/toolbar/songs/${songId}`)
+      .then(response => {
+        this.setState({ currentSong: response.data });
+        this.setState({ songId: songId });
+        this.setState(prevState => ({
+          queue: [response.data, ...prevState.queue]
+        }));
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
   render() {
 
-    const { currentSong, data, progress, queue, volume } = this.state;
-
-    // if (queue) {
-    //   queueComponent = <QueuePanel data={data}></QueuePanel>;
-    // } else {
-    //   queueComponent = <React.Fragment></React.Fragment>;
-    // }
+    const { currentSong, data, progress, queue, queueIcon, volume, play } = this.state;
+    console.log(queue);
 
     return (
       <Footer>
         <Wrapper>
           <Toolbar className="contain" >
             <Bg></Bg>
-            <AudioPlayer volume={volume} currentSong={currentSong} progress={progress} className="b" />
-            <Volume volumeClickHandler={this.onVolumeClick} volume={volume}/>
+            <AudioPlayer volume={volume} currentSong={currentSong} progress={progress} play={play} playHandler={this.onPlay} progressionHandler={this.onProgression} nextHandler={this.onNext} backHandler={this.onBack} className="b" />
+            <Volume volumeClickHandler={this.onVolumeClick} volume={volume} />
             <SongInfo currentSong={currentSong} queueClickHandler={this.onQueueClick} />
-            {queue && <QueuePanel data={data} currentSong={currentSong}></QueuePanel>}
+            {queueIcon && <QueuePanel data={data} currentSong={currentSong}></QueuePanel>}
             <Panel></Panel>
           </Toolbar>
         </Wrapper>
