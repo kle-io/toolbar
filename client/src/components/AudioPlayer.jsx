@@ -157,14 +157,13 @@ class AudioPlayer extends React.Component {
 
   render() {
 
-    const { progress, progressionHandler, List, currentSong, playHandler, play, nextHandler, backHandler } = this.props;
+    const { progress, play, shuffle, repeat, currentSong, shuffleHandler, progressionHandler, playHandler, nextHandler, backHandler, repeatHandler } = this.props;
 
     const minutes = Math.floor(currentSong.duration / 60) % 60;
     let seconds = Math.floor(currentSong.duration) % 60;
     if (seconds.toString().length === 1) {
       seconds = `0${seconds}`;
     }
-
     return (
       <React.Fragment>
         <PlayControlElements>
@@ -172,8 +171,15 @@ class AudioPlayer extends React.Component {
           <Back onClick={() => backHandler()}><i className="fas fa-step-backward fa-lg"></i></Back>
           <Play onClick={() => playHandler()}><i className={`fas fa-${play ? 'pause' : 'play'} fa-lg`}></i></Play>
           <Forward onClick={() => nextHandler()}><i className="fas fa-step-forward fa-lg"></i></Forward>
-          <Shuffle><i className="fas fa-random fa-lg"></i></Shuffle>
-          <Repeat><i className="fas fa-circle-notch fa-lg"></i></Repeat>
+          <Shuffle onClick={() => shuffleHandler()}>
+            <i className="fas fa-random fa-lg" style={{ color: `#${shuffle ? 'f50' : '333'}` }}></i>
+          </Shuffle>
+          <Repeat onClick={() => repeatHandler()}><i className=
+          {`${
+            (repeat === 0) ? 'fas fa-circle-notch fa-lg' : ((repeat === 1) ? 'fas fa-link fa-lg' : 'fas fa-infinity fa-lg')
+          }`}
+          style={{ color: `#${(repeat !== 0) ? 'f50' : '333'}` }}
+          ></i></Repeat>
         </PlayControlElements>
         <Timeline className="music">
           <TimePassed>

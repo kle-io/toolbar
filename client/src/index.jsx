@@ -9,7 +9,6 @@ import QueuePanel from './components/QueuePanel.jsx';
 import * as $ from 'jquery';
 
 // styling for the toolbar
-
 const Footer = window.styled.div`
 position: fixed;
 bottom: 0;
@@ -77,7 +76,9 @@ class App extends React.Component {
       progress: '00:00',
       volume: false,
       songId: null,
-      autoplay: false
+      autoplay: false,
+      shuffle: false,
+      repeat: 0
     };
 
     this.onQueueClick = this.onQueueClick.bind(this);
@@ -89,6 +90,8 @@ class App extends React.Component {
     this.onQueueClearClick = this.onQueueClearClick.bind(this);
     this.onClearClick = this.onClearClick.bind(this);
     this.onAutoplay = this.onAutoplay.bind(this);
+    this.onShuffle = this.onShuffle.bind(this);
+    this.onRepeat = this.onRepeat.bind(this);
 
   }
 
@@ -148,11 +151,11 @@ class App extends React.Component {
   onPlay() {
     event.preventDefault();
     const { play } = this.state;
-    const audio = document.getElementsByTagName('audio')[0];
+    const myAudioPlayer = document.getElementsByClassName('myAudioPlayer')[0];
     if (play) {
-      audio.pause();
+      myAudioPlayer.pause();
     } else {
-      audio.play();
+      myAudioPlayer.play();
     }
     this.setState({ play: !play });
   }
@@ -178,26 +181,29 @@ class App extends React.Component {
 
   onShuffle() {
     event.preventDefault();
-    songId = Math.floor(Math.random() * 100);
-    axios.get(`/api/toolbar/songs/${songId}`)
-      .then(response => {
-        this.setState({ currentSong: response.data });
-        this.setState({ songId: songId });
-        this.setState(prevState => ({
-          queue: [response.data, ...prevState.queue]
-        }));
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    let { shuffle } = this.state;
+    this.setState({ shuffle: !shuffle });
+  }
+
+  onRepeat() {
+    event.preventDefault();
+    let { repeat } = this.state;
+    if (repeat === 0) {
+      repeat = 1;
+    } else if (repeat === 1){
+      repeat = 2;
+    } else {
+      repeat = 0;
+    };
+    this.setState({ repeat: repeat });
   }
 
   onProgression() {
     event.preventDefault();
-    const audio = document.getElementsByClassName('myAudioPlayer')[0];
-    document.getElementsByClassName('myProgressBar')[0].style.width = `${(audio.currentTime / audio.duration) * 100}%`;
-    let sec = parseInt(audio.currentTime % 60, 0);
-    let min = parseInt((audio.currentTime / 60) % 60, 0);
+    const myAudioPlayer = document.getElementsByClassName('myAudioPlayer')[0];
+    document.getElementsByClassName('myProgressBar')[0].style.width = `${(myAudioPlayer.currentTime / myAudioPlayer.duration) * 100}%`;
+    let sec = parseInt(myAudioPlayer.currentTime % 60, 0);
+    let min = parseInt((myAudioPlayer.currentTime / 60) % 60, 0);
     if (sec.toString().length === 1) {
       sec = `0${sec}`;
     }
@@ -217,7 +223,6 @@ class App extends React.Component {
     event.preventDefault();
     const { queueIcon } = this.state;
     this.setState({ queueIcon: !queueIcon });
-    console.log(queue);
   }
 
   onAutoplay() {
@@ -244,7 +249,7 @@ class App extends React.Component {
 
   render() {
 
-    const { currentSong, progress, queue, queueIcon, volume, play, autoplay } = this.state;
+    const { currentSong, progress, queue, queueIcon, volume, play, autoplay, shuffle, repeat } = this.state;
     console.log(queue);
 
     return (
@@ -252,7 +257,7 @@ class App extends React.Component {
         <Wrapper>
           <Toolbar className="contain" >
             <Bg></Bg>
-            <AudioPlayer volume={volume} currentSong={currentSong} progress={progress} play={play} playHandler={this.onPlay} progressionHandler={this.onProgression} nextHandler={this.onNext} backHandler={this.onBack} />
+            <AudioPlayer volume={volume} repeat={repeat} shuffle={shuffle} currentSong={currentSong} progress={progress} play={play} playHandler={this.onPlay} progressionHandler={this.onProgression} nextHandler={this.onNext} backHandler={this.onBack} shuffleHandler={this.onShuffle} repeatHandler={this.onRepeat} />
             <Volume volumeClickHandler={this.onVolumeClick} volume={volume} />
             <SongInfo currentSong={currentSong} queueClickHandler={this.onQueueClick} />
             {queueIcon && <QueuePanel queue={queue} currentSong={currentSong} autoplay={autoplay} autoplayHandler={this.onAutoplay} queueClearHandler={this.onQueueClearClick} clearClickHandler={this.onClearClick}></QueuePanel>}
